@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lotes — NR Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--clr-beige) 0%, var(--clr-bg) 100%);
+      padding: calc(var(--nav-h) + 56px) 0 56px;
+      text-align: center;
+    }
+    .page-hero p { color: var(--clr-muted); margin: .75rem auto 0; max-width: 500px; }
+
+    /* Filtros */
+    .filters {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--clr-border);
+      background: var(--clr-white);
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 10;
+    }
+    .filters-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: .65rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-label { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--clr-muted); margin-right: .2rem; }
+    .filter-btn {
+      padding: .4rem 1rem;
+      border-radius: 99px;
+      border: 1.5px solid var(--clr-border);
+      background: none;
+      font-size: .82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--ff-body);
+      color: var(--clr-muted);
+    }
+    .filter-btn:hover, .filter-btn.active { background: var(--clr-dark); color: #fff; border-color: var(--clr-dark); }
+
+    /* Grid */
+    .products-grid {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 2rem;
+    }
+    @media (max-width: 900px) { .products-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 520px) { .products-grid { grid-template-columns: 1fr; } }
+
+    /* Tarjeta */
+    .product-card {
+      background: var(--clr-white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+    .card-img-wrap { position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--clr-beige); }
+    .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .product-card:hover .card-img-wrap img { transform: scale(1.04); }
+
+    .card-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: var(--clr-olive); color: #fff;
+      font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: .3rem .7rem; border-radius: 99px;
+    }
+    .card-badge.sold { background: var(--clr-muted); }
+    .card-badge.new  { background: var(--clr-earth); }
+
+    .card-body { padding: 1.25rem 1.25rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
+    .card-category { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--clr-olive); font-weight: 600; margin-bottom: .4rem; }
+    .card-title { font-family: var(--ff-head); font-size: 1.25rem; font-weight: 500; margin-bottom: .5rem; color: var(--clr-dark); }
+    .card-desc  { font-size: .85rem; color: var(--clr-muted); line-height: 1.6; margin-bottom: 1rem; flex: 1; }
+    .card-meta  { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .card-tag   { font-size: .72rem; background: var(--clr-beige); color: var(--clr-earth); padding: .25rem .65rem; border-radius: 99px; font-weight: 500; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+    .card-price { font-family: var(--ff-head); font-size: 1.55rem; font-weight: 600; color: var(--clr-dark); }
+    .card-price .from { font-size: .8rem; color: var(--clr-muted); font-family: var(--ff-body); font-weight: 400; display: block; }
+    .btn-detail {
+      padding: .6rem 1rem; font-size: .8rem;
+      background: var(--clr-dark); color: #fff;
+      border: none; border-radius: var(--radius-sm);
+      font-family: var(--ff-body); font-weight: 600;
+      cursor: pointer; letter-spacing: .05em; white-space: nowrap;
+      transition: var(--transition);
+    }
+    .btn-detail:hover { background: var(--clr-olive); }
+
+    /* ============================================================
+       MODAL DE DETALLE
+    ============================================================ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(28,28,26,.55);
+      z-index: 1100;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--clr-white);
+      border-radius: var(--radius-lg);
+      width: 100%; max-width: 920px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(24px);
+      transition: transform .3s ease;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    @media (max-width: 680px) { .modal { grid-template-columns: 1fr; } }
+
+    /* Galería lado izq */
+    .modal-gallery { position: relative; background: var(--clr-beige); overflow: hidden; }
+    .modal-gallery img.main-img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover;
+    }
+    .modal-thumbs {
+      display: flex; gap: 8px; padding: 10px;
+      background: rgba(245,242,237,.85);
+      flex-wrap: wrap;
+    }
+    .thumb {
+      width: 58px; height: 58px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color var(--transition);
+    }
+    .thumb.active { border-color: var(--clr-olive); }
+
+    /* Info lado der */
+    .modal-info {
+      padding: 2rem 2rem 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,.9);
+      border: none; border-radius: 50%;
+      width: 36px; height: 36px;
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition); z-index: 2;
+    }
+    .modal-close:hover { background: var(--clr-dark); color: #fff; }
+
+    .modal-cat { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--clr-olive); font-weight: 600; }
+    .modal-title { font-family: var(--ff-head); font-size: 1.7rem; font-weight: 500; color: var(--clr-dark); line-height: 1.2; }
+    .modal-desc  { font-size: .9rem; color: var(--clr-muted); line-height: 1.75; }
+
+    /* Selector de tamaño */
+    .size-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--clr-dark); margin-bottom: .5rem; }
+    .size-grid  { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .size-opt {
+      padding: .45rem .9rem;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      font-size: .82rem; font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--ff-body);
+      background: none;
+      color: var(--clr-dark);
+    }
+    .size-opt:hover { border-color: var(--clr-dark); }
+    .size-opt.active { background: var(--clr-dark); color: #fff; border-color: var(--clr-dark); }
+    .size-opt.sold-out { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+
+    /* Precio dinámico */
+    .modal-price-wrap { border-top: 1px solid var(--clr-border); padding-top: 1rem; }
+    .modal-price { font-family: var(--ff-head); font-size: 2.1rem; font-weight: 600; color: var(--clr-dark); }
+    .modal-per   { font-size: .82rem; color: var(--clr-muted); margin-top: .15rem; }
+
+    .modal-tags  { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .modal-tag   { font-size: .75rem; background: var(--clr-beige); color: var(--clr-earth); padding: .3rem .75rem; border-radius: 99px; font-weight: 500; }
+
+    .modal-add {
+      padding: .85rem 1.25rem;
+      background: var(--clr-dark); color: #fff;
+      border: none; border-radius: var(--radius-sm);
+      font-family: var(--ff-body); font-size: .95rem; font-weight: 700;
+      cursor: pointer; width: 100%; letter-spacing: .04em;
+      transition: var(--transition);
+    }
+    .modal-add:hover { background: var(--clr-olive); }
+    .modal-add:disabled { background: var(--clr-border); color: var(--clr-muted); cursor: not-allowed; }
+
+    .modal-note { font-size: .78rem; color: var(--clr-muted); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="./logo.png" alt="NR Collection" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+        <span class="nav-brand" style="display:none">NR Collection</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="lotes.html" class="active">Lotes</a></li>
+        <li><a href="resenas.html">Reseñas</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Carrito">
+          🛍️<span class="cart-count" id="cart-count">0</span>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="section-inner">
+      <span class="section-label">Catalogo</span>
+      <h1>Nuestros Lotes</h1>
+      <p>Cada lote esta cuidadosamente seleccionado. Ropa de calidad, precios justos, impacto positivo.</p>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filters-inner">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="mujer">Mujer</button>
+      <button class="filter-btn" data-filter="hombre">Hombre</button>
+      <button class="filter-btn" data-filter="infantil">Infantil</button>
+      <button class="filter-btn" data-filter="mix">Mix</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="products-grid" id="products-grid">
+
+      <!-- Las tarjetas se generan con JS desde el array LOTS -->
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>NR Collection</h3>
+          <p>Moda de segunda mano por lotes. Sostenible, asequible y con estilo.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="TikTok">🎵</a>
+            <a href="#" aria-label="WhatsApp">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navegacion</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="lotes.html">Lotes</a></li>
+            <li><a href="resenas.html">Resenas</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Política de Devoluciones</a></li>
+            <li><a href="#">Aviso Legal</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 NR Collection. Todos los derechos reservados.</span>
+        <span>Hecho con mucho amor</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART SIDEBAR -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h3>Tu Cesta</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cart-total-amount">0.00 €</span>
+      </div>
+      <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">Pedir por WhatsApp</button>
+    </div>
+  </aside>
+
+  <!-- MODAL DETALLE -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal" id="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-gallery" id="modal-gallery">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <img class="main-img" id="modal-main-img" src="" alt=""/>
+        <div class="modal-thumbs" id="modal-thumbs"></div>
+      </div>
+      <div class="modal-info" id="modal-info"></div>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
+  <script>
+  /* ==============================================
+     DATOS DE LOTES
+  ============================================== */
+  const LOTS = [
+    {
+      id: 'lot001',
+      category: 'mujer',
+      badge: 'Nuevo',
+      badgeType: 'new',
+      title: 'Lote Camisetas Vintage Mujer',
+      desc: 'Camisetas de mujer en muy buen estado. Marcas como Zara, H&M y Pull&Bear. Ideales para uso personal o reventa.',
+      tags: ['Muy buen estado', 'Marcas variadas'],
+      images: [
+        'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=75',
+        'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=700&q=75',
+        'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=700&q=75',
+      ],
+      sizes: [
+        { label: '10 prendas (S–M)',  price: 22, perUnit: 2.20, stock: true },
+        { label: '20 prendas (S–L)',  price: 40, perUnit: 2.00, stock: true },
+        { label: '30 prendas (XS–XL)',price: 55, perUnit: 1.83, stock: true },
+      ],
+    },
+    {
+      id: 'lot002',
+      category: 'hombre',
+      badge: null,
+      title: 'Lote Sudaderas Hombre',
+      desc: 'Sudaderas de hombre en buen estado general. Tallas mixtas M–XL. Perfectas para los meses de frio. Puede haber alguna prenda en grado B.',
+      tags: ['Buen estado', 'Tallas M–XL'],
+      images: [
+        'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=700&q=75',
+        'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=700&q=75',
+        'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=700&q=75',
+      ],
+      sizes: [
+        { label: '10 prendas (M–L)',   price: 38, perUnit: 3.80, stock: true },
+        { label: '15 prendas (M–XL)',  price: 52, perUnit: 3.47, stock: true },
+        { label: '25 prendas (S–XXL)', price: 80, perUnit: 3.20, stock: false },
+      ],
+    },
+    {
+      id: 'lot003',
+      category: 'mujer',
+      badge: null,
+      title: 'Lote Vestidos Verano Mujer',
+      desc: 'Vestidos de verano en estado excelente. Varios estilos: casual, boho y midi. Tallas XS–M.',
+      tags: ['Excelente estado', 'Tallas XS–M', 'Temporada verano'],
+      images: [
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=75',
+        'https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=700&q=75',
+        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=75',
+      ],
+      sizes: [
+        { label: '5 vestidos (XS–S)',  price: 28, perUnit: 5.60, stock: true },
+        { label: '10 vestidos (XS–M)', price: 50, perUnit: 5.00, stock: true },
+        { label: '15 vestidos (XS–L)', price: 70, perUnit: 4.67, stock: true },
+      ],
+    },
+    {
+      id: 'lot004',
+      category: 'infantil',
+      badge: 'Nuevo',
+      badgeType: 'new',
+      title: 'Lote Ropa Infantil Mixto',
+      desc: 'Prendas mixtas para ninos y ninas de 2 a 8 anos. Camisetas, pantalones, sudaderas. Marcas: Zara Kids, H&M, Primark.',
+      tags: ['2–8 años', 'Nino y nina', 'Muy buen estado'],
+      images: [
+        'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=700&q=75',
+        'https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?w=700&q=75',
+        'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=700&q=75',
+      ],
+      sizes: [
+        { label: '15 prendas (2–4 a)', price: 22, perUnit: 1.47, stock: true },
+        { label: '25 prendas (2–8 a)', price: 34, perUnit: 1.36, stock: true },
+        { label: '40 prendas (2–8 a)', price: 50, perUnit: 1.25, stock: true },
+      ],
+    },
+    {
+      id: 'lot005',
+      category: 'mix',
+      badge: 'Premium',
+      badgeType: 'new',
+      title: 'Lote Mix Premium Marcas',
+      desc: 'Prendas de marcas premium: Tommy Hilfiger, Calvin Klein, Ralph Lauren y similares. Estado muy bueno. Mezcla hombre y mujer.',
+      tags: ['Marcas premium', 'Hombre y mujer', 'Muy buen estado'],
+      images: [
+        'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=75',
+        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=75',
+        'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=700&q=75',
+      ],
+      sizes: [
+        { label: '15 prendas mix',    price: 65,  perUnit: 4.33, stock: true },
+        { label: '30 prendas mix',    price: 120, perUnit: 4.00, stock: true },
+        { label: '50 prendas mix',    price: 190, perUnit: 3.80, stock: false },
+      ],
+    },
+    {
+      id: 'lot006',
+      category: 'mujer',
+      badge: 'Agotado',
+      badgeType: 'sold',
+      sold: true,
+      title: 'Lote Abrigos Mujer Otono-Invierno',
+      desc: 'Abrigos y chaquetas de mujer para temporada otono-invierno. Tallas S–L. Marcas: Zara, Mango, Stradivarius.',
+      tags: ['Tallas S–L', 'Otono-Invierno'],
+      images: [
+        'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=700&q=75',
+        'https://images.unsplash.com/photo-1539533018257-f63a99e38b5a?w=700&q=75',
+      ],
+      sizes: [
+        { label: '5 prendas (S–M)',  price: 45, perUnit: 9.00, stock: false },
+        { label: '8 prendas (S–L)',  price: 70, perUnit: 8.75, stock: false },
+      ],
+    },
+  ];
+
+  /* ==============================================
+     RENDERIZAR TARJETAS
+  ============================================== */
+  function renderCards(filter = 'all') {
+    const grid = document.getElementById('products-grid');
+    grid.innerHTML = '';
+    const filtered = filter === 'all' ? LOTS : LOTS.filter(l => l.category === filter);
+    if (!filtered.length) {
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--clr-muted)">No hay lotes en esta categoria por el momento.</p>';
+      return;
+    }
+    filtered.forEach(lot => {
+      const minPrice = Math.min(...lot.sizes.map(s => s.price));
+      const badgeHtml = lot.badge
+        ? `<span class="card-badge ${lot.badgeType || ''}">${lot.badge}</span>` : '';
+      const card = document.createElement('article');
+      card.className = 'product-card';
+      card.dataset.id  = lot.id;
+      card.dataset.cat = lot.category;
+      card.innerHTML = `
+        <div class="card-img-wrap">
+          <img src="${lot.images[0]}" alt="${lot.title}" loading="lazy"/>
+          ${badgeHtml}
+        </div>
+        <div class="card-body">
+          <span class="card-category">${lot.category.charAt(0).toUpperCase()+lot.category.slice(1)}</span>
+          <h2 class="card-title">${lot.title}</h2>
+          <p class="card-desc">${lot.desc}</p>
+          <div class="card-meta">${lot.tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>
+          <div class="card-footer">
+            <div class="card-price">
+              ${minPrice} €
+              <span class="from">desde / lote</span>
+            </div>
+            <button class="btn-detail" onclick="openModal('${lot.id}',event)">
+              Ver detalle
+            </button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  /* ==============================================
+     MODAL
+  ============================================== */
+  let currentLot = null;
+  let selectedSize = null;
+
+  function openModal(id, e) {
+    e && e.stopPropagation();
+    currentLot = LOTS.find(l => l.id === id);
+    if (!currentLot) return;
+    selectedSize = null;
+
+    // Galería
+    const mainImg = document.getElementById('modal-main-img');
+    mainImg.src = currentLot.images[0];
+    mainImg.alt = currentLot.title;
+
+    const thumbsEl = document.getElementById('modal-thumbs');
+    thumbsEl.innerHTML = currentLot.images.map((src,i) =>
+      `<img class="thumb ${i===0?'active':''}" src="${src}" alt="Vista ${i+1}"
+            onclick="switchImg(this,'${src}')" loading="lazy"/>`
+    ).join('');
+
+    // Info
+    const soldAll = currentLot.sizes.every(s => !s.stock);
+    const sizesHtml = currentLot.sizes.map((s,i) =>
+      `<button class="size-opt ${!s.stock?'sold-out':''}"
+               data-idx="${i}" data-price="${s.price}" data-unit="${s.perUnit}"
+               ${!s.stock?'disabled':''}
+               onclick="selectSize(this,${i})">
+         ${s.label}${!s.stock?' — Agotado':''}
+       </button>`
+    ).join('');
+
+    document.getElementById('modal-info').innerHTML = `
+      <div class="modal-cat">${currentLot.category.charAt(0).toUpperCase()+currentLot.category.slice(1)}</div>
+      <h2 class="modal-title">${currentLot.title}</h2>
+      <p class="modal-desc">${currentLot.desc}</p>
+      <div class="modal-tags">${currentLot.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('')}</div>
+      <div>
+        <div class="size-label">Elige el tamano del lote</div>
+        <div class="size-grid" id="modal-sizes">${sizesHtml}</div>
+      </div>
+      <div class="modal-price-wrap">
+        <div class="modal-price" id="modal-price">${soldAll ? 'Agotado' : 'Selecciona un tamano'}</div>
+        <div class="modal-per"  id="modal-per"></div>
+      </div>
+      <button class="modal-add" id="modal-add-btn"
+              onclick="addFromModal()"
+              ${soldAll?'disabled':''}>
+        ${soldAll ? 'Agotado' : 'Anadir al carrito'}
+      </button>
+      <p class="modal-note">Pago por Bizum o transferencia. Pedido via WhatsApp.</p>
+    `;
+
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    currentLot = null; selectedSize = null;
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  function switchImg(el, src) {
+    document.getElementById('modal-main-img').src = src;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectSize(btn, idx) {
+    if (btn.disabled) return;
+    document.querySelectorAll('.size-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = currentLot.sizes[idx];
+    document.getElementById('modal-price').textContent = selectedSize.price + ' €';
+    document.getElementById('modal-per').textContent   = selectedSize.perUnit.toFixed(2) + ' € / prenda aprox.';
+    const addBtn = document.getElementById('modal-add-btn');
+    addBtn.disabled = false;
+    addBtn.textContent = 'Anadir al carrito';
+  }
+
+  function addFromModal() {
+    if (!selectedSize) { alert('Elige un tamano de lote antes de anadir.'); return; }
+    const cartId  = currentLot.id + '_' + selectedSize.label.replace(/\s/g,'_');
+    const cartName = currentLot.title + ' — ' + selectedSize.label;
+    addToCart(cartId, cartName, selectedSize.price, currentLot.images[0]);
+    closeModal();
+  }
+
+  /* ==============================================
+     FILTROS
+  ============================================== */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards(btn.dataset.filter);
+    });
+  });
+
+  /* ==============================================
+     INIT
+  ============================================== */
+  renderCards();
+
+  // Cerrar modal con Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+</body>
+</html>

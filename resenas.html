@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reseñas — NR Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--clr-beige) 0%, var(--clr-bg) 100%);
+      padding: calc(var(--nav-h) + 56px) 0 56px;
+      text-align: center;
+    }
+    .page-hero p { color: var(--clr-muted); margin: .75rem auto 0; max-width: 480px; }
+
+    .stats-bar {
+      background: var(--clr-white);
+      border-bottom: 1px solid var(--clr-border);
+      padding: 32px 0;
+    }
+    .stats-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-item strong { display: block; font-family: var(--ff-head); font-size: 2.2rem; color: var(--clr-dark); }
+    .stat-item span   { font-size: .85rem; color: var(--clr-muted); }
+
+    .reviews-section { padding: 72px 0; }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) { .reviews-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 560px) { .reviews-grid { grid-template-columns: 1fr; } }
+
+    .review-card {
+      background: var(--clr-white);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      transition: box-shadow var(--transition), transform var(--transition);
+      position: relative;
+    }
+    .review-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .review-card.featured { background: var(--clr-dark); color: #fff; }
+    .review-card.featured .review-text { color: rgba(255,255,255,.78); }
+    .review-card.featured .review-date { color: rgba(255,255,255,.4); }
+    .review-card.featured .verified-badge { background: rgba(255,255,255,.12); color: rgba(255,255,255,.7); }
+
+    .stars { display: flex; gap: 2px; font-size: 1rem; }
+    .star-filled { color: #F5A623; }
+    .star-empty  { color: var(--clr-border); }
+    .review-card.featured .star-empty { color: rgba(255,255,255,.2); }
+
+    .review-text {
+      font-size: .9rem;
+      color: var(--clr-muted);
+      line-height: 1.72;
+      flex: 1;
+    }
+    .reviewer { display: flex; align-items: center; gap: .85rem; }
+    .reviewer-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--clr-beige);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--clr-earth);
+      flex-shrink: 0;
+    }
+    .review-card.featured .reviewer-avatar { background: rgba(255,255,255,.12); color: #fff; }
+    .reviewer-info strong { display: block; font-size: .88rem; font-weight: 600; }
+    .review-date { font-size: .73rem; color: var(--clr-muted); }
+
+    .verified-badge {
+      position: absolute;
+      top: 1.1rem; right: 1.1rem;
+      font-size: .67rem;
+      background: #e8f5e9;
+      color: #388e3c;
+      padding: .2rem .55rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    /* Rating summary */
+    .rating-summary {
+      background: var(--clr-white);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .rating-big { text-align: center; flex-shrink: 0; }
+    .rating-big .score { font-family: var(--ff-head); font-size: 4rem; font-weight: 600; line-height: 1; color: var(--clr-dark); }
+    .rating-big .stars { justify-content: center; margin: .4rem 0; }
+    .rating-big span { font-size: .8rem; color: var(--clr-muted); }
+    .rating-bars { flex: 1; min-width: 200px; }
+    .bar-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .55rem; }
+    .bar-label { font-size: .8rem; color: var(--clr-muted); width: 28px; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 8px; background: var(--clr-beige); border-radius: 99px; overflow: hidden; }
+    .bar-fill  { height: 100%; background: #F5A623; border-radius: 99px; }
+    .bar-pct   { font-size: .78rem; color: var(--clr-muted); width: 32px; }
+
+    /* Formulario nueva reseña */
+    .new-review-section {
+      background: var(--clr-beige);
+      padding: 72px 0;
+    }
+    .review-form-wrap {
+      background: var(--clr-white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 680px;
+      margin: 2rem auto 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label { font-size: .8rem; font-weight: 600; color: var(--clr-muted); letter-spacing: .06em; text-transform: uppercase; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: .7rem 1rem;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--ff-body);
+      font-size: .9rem;
+      color: var(--clr-dark);
+      background: var(--clr-bg);
+      transition: border-color var(--transition);
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--clr-olive); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .star-picker { display: flex; gap: .4rem; margin-top: .2rem; }
+    .star-pick {
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--clr-border);
+      transition: color var(--transition);
+      line-height: 1;
+      user-select: none;
+    }
+    .star-pick.on { color: #F5A623; }
+    .form-submit { margin-top: 1.25rem; }
+    .form-submit .btn { width: 100%; justify-content: center; }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem 0 1rem;
+      color: var(--clr-olive);
+      font-size: 1.05rem;
+    }
+    .form-success .ok-icon { font-size: 2.5rem; margin-bottom: .5rem; display: block; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="./logo.png" alt="NR Collection" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+        <span class="nav-brand" style="display:none">NR Collection</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="lotes.html">Lotes</a></li>
+        <li><a href="resenas.html" class="active">Reseñas</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Carrito">
+          🛍️<span class="cart-count" id="cart-count">0</span>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="section-inner">
+      <span class="section-label">Opiniones reales</span>
+      <h1>Lo que dicen nuestros clientes</h1>
+      <p>Reseñas de compradores reales, sin filtros.</p>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><strong>4.4</strong><span>Valoración media</span></div>
+      <div class="stat-item"><strong>+200</strong><span>Pedidos realizados</span></div>
+      <div class="stat-item"><strong>12</strong><span>Reseñas verificadas</span></div>
+    </div>
+  </div>
+
+  <main>
+    <section class="reviews-section">
+      <div class="section-inner">
+
+        <div class="rating-summary">
+          <div class="rating-big">
+            <div class="score">4.4</div>
+            <div class="stars">
+              <span class="star-filled">★</span><span class="star-filled">★</span>
+              <span class="star-filled">★</span><span class="star-filled">★</span>
+              <span class="star-empty">★</span>
+            </div>
+            <span>Basado en 12 reseñas</span>
+          </div>
+          <div class="rating-bars">
+            <div class="bar-row"><span class="bar-label">5★</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-pct">50%</span></div>
+            <div class="bar-row"><span class="bar-label">4★</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-pct">25%</span></div>
+            <div class="bar-row"><span class="bar-label">3★</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-pct">17%</span></div>
+            <div class="bar-row"><span class="bar-label">2★</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-pct">8%</span></div>
+            <div class="bar-row"><span class="bar-label">1★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
+          </div>
+        </div>
+
+        <div class="reviews-grid" id="reviews-grid">
+
+          <!-- 1 — 5★ -->
+          <div class="review-card featured">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Pedí mi primer lote con bastante escepticismo y quedé muy sorprendida. Las camisetas estaban en perfecto estado, bien embaladas y el trato fue muy atento. Ya tengo el segundo pedido en camino.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">LP</div>
+              <div class="reviewer-info">
+                <strong>Laura P.</strong>
+                <div class="review-date">Abril 2025 · Lote Camisetas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2 — 5★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Compro para revender y la relación calidad-precio es muy buena. Los lotes están bien seleccionados, pocas sorpresas desagradables.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">JM</div>
+              <div class="reviewer-info">
+                <strong>Javier M.</strong>
+                <div class="review-date">Abril 2025 · Lote Mix Premium</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 — 4★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Buena experiencia en general. El envío llegó en plazo y la mayoría de prendas estaban en muy buen estado. Alguna en grado B que no esperaba, aunque es segunda mano y tampoco es grave.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">AV</div>
+              <div class="reviewer-info">
+                <strong>Andrea V.</strong>
+                <div class="review-date">Marzo 2025 · Lote Camisetas Vintage</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 — 5★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Compré el lote infantil para mis hijos. Ropa de calidad a buen precio. Repetiremos sin duda.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">SR</div>
+              <div class="reviewer-info">
+                <strong>Sergio R.</strong>
+                <div class="review-date">Marzo 2025 · Lote Infantil</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 — 3★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">El lote llegó bien pero varias prendas venían en grado B cuando en la descripcion no lo indicaba. Al final el precio era bajo así que tampoco me sorprendió demasiado, pero aviso por si alguien lo compra para revender.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">DG</div>
+              <div class="reviewer-info">
+                <strong>Daniel G.</strong>
+                <div class="review-date">Febrero 2025 · Lote Sudaderas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 — 5★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Todo perfecto. Comunicacion rapida por WhatsApp y el paquete en dos dias. Sin quejas.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">CM</div>
+              <div class="reviewer-info">
+                <strong>Carlos M.</strong>
+                <div class="review-date">Enero 2025 · Lote Sudaderas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7 — 4★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Buen lote en general. La mitad de prendas estaban genial, otras en un estado más justo. Para el precio que pague me parece razonable. Repetiria.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">IL</div>
+              <div class="reviewer-info">
+                <strong>Irene L.</strong>
+                <div class="review-date">Enero 2025 · Lote Mix Premium</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 — 3★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Algunas prendas venian con marcas que no se van del todo. Hay que revisarlo antes de vender. Aun asi el precio es ajustado y el trato fue correcto.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">MT</div>
+              <div class="reviewer-info">
+                <strong>Miguel T.</strong>
+                <div class="review-date">Diciembre 2024 · Lote Camisetas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9 — 5★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Tercer pedido y sin problemas. Lotes bien descritos, envio rapido, trato agradable. Lo recomiendo a cualquiera que quiera empezar a revender.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">RP</div>
+              <div class="reviewer-info">
+                <strong>Rosa P.</strong>
+                <div class="review-date">Noviembre 2024 · Lote Vestidos</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10 — 4★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Producto correcto. Algun detalle menor en dos o tres prendas pero dentro de lo esperable en segunda mano. En conjunto bien.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">FN</div>
+              <div class="reviewer-info">
+                <strong>Fernando N.</strong>
+                <div class="review-date">Octubre 2024 · Lote Infantil</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11 — 2★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">El lote de sudaderas tenia bastantes en grado B, algunas con pelotillas y un par con agujeritos. Para uso personal te lo puedes plantear pero para revender es complicado. Me esperaba mejor seleccion.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">BL</div>
+              <div class="reviewer-info">
+                <strong>Blanca L.</strong>
+                <div class="review-date">Septiembre 2024 · Lote Sudaderas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 12 — 5★ -->
+          <div class="review-card">
+            <span class="verified-badge">Verificada</span>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Muy contenta. Prendas en buen estado y comunicacion fluida. Repito seguro.</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar">AC</div>
+              <div class="reviewer-info">
+                <strong>Alba C.</strong>
+                <div class="review-date">Agosto 2024 · Lote Camisetas Vintage</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /reviews-grid -->
+      </div>
+    </section>
+
+    <!-- FORMULARIO NUEVA RESEÑA -->
+    <section class="new-review-section">
+      <div class="section-inner">
+        <div style="text-align:center">
+          <span class="section-label">Tu opinion importa</span>
+          <h2 class="section-title">Deja tu reseña</h2>
+          <p style="color:var(--clr-muted);max-width:460px;margin:.5rem auto 0">
+            ¿Ya has comprado en NR Collection? Comparte tu experiencia con otros compradores.
+          </p>
+        </div>
+        <div class="review-form-wrap">
+          <form id="review-form" onsubmit="submitReview(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="r-name" placeholder="Tu nombre" required/>
+              </div>
+              <div class="form-group">
+                <label>Lote comprado</label>
+                <select id="r-lot">
+                  <option value="Lote Camisetas Vintage">Lote Camisetas Vintage</option>
+                  <option value="Lote Sudaderas">Lote Sudaderas</option>
+                  <option value="Lote Vestidos Verano">Lote Vestidos Verano</option>
+                  <option value="Lote Infantil">Lote Infantil</option>
+                  <option value="Lote Mix Premium">Lote Mix Premium</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:1rem">
+              <label>Valoracion</label>
+              <div class="star-picker" id="star-picker">
+                <span class="star-pick" data-v="1">★</span>
+                <span class="star-pick" data-v="2">★</span>
+                <span class="star-pick" data-v="3">★</span>
+                <span class="star-pick" data-v="4">★</span>
+                <span class="star-pick" data-v="5">★</span>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:1.25rem">
+              <label>Tu comentario</label>
+              <textarea id="r-text" placeholder="Cuenta tu experiencia con el lote..." required></textarea>
+            </div>
+            <div class="form-submit">
+              <button type="submit" class="btn btn-primary">Publicar reseña</button>
+            </div>
+          </form>
+          <div class="form-success" id="form-success">
+            <span class="ok-icon">✓</span>
+            <strong>Gracias por tu reseña.</strong>
+            <p style="color:var(--clr-muted);font-size:.9rem;margin-top:.4rem">La revisaremos y la publicaremos pronto.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>NR Collection</h3>
+          <p>Moda de segunda mano por lotes. Sostenible, asequible y con estilo.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="TikTok">🎵</a>
+            <a href="#" aria-label="WhatsApp">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="lotes.html">Lotes</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Política de Devoluciones</a></li>
+            <li><a href="#">Aviso Legal</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 NR Collection. Todos los derechos reservados.</span>
+        <span>Hecho con mucho amor</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h3>Tu Cesta</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cart-total-amount">0.00 €</span>
+      </div>
+      <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">Pedir por WhatsApp</button>
+    </div>
+  </aside>
+
+  <script src="cart.js"></script>
+  <script>
+    /* ── Star picker ── */
+    let selectedStars = 0;
+    const picks = document.querySelectorAll('.star-pick');
+    picks.forEach(s => {
+      s.addEventListener('mouseenter', () => {
+        picks.forEach((p,i) => p.classList.toggle('on', i < +s.dataset.v));
+      });
+      s.addEventListener('click', () => { selectedStars = +s.dataset.v; });
+    });
+    document.getElementById('star-picker').addEventListener('mouseleave', () => {
+      picks.forEach((p,i) => p.classList.toggle('on', i < selectedStars));
+    });
+
+    /* ── Submit reseña ── */
+    function submitReview(e) {
+      e.preventDefault();
+      if (!selectedStars) { alert('Elige una valoracion de estrellas.'); return; }
+      const name = document.getElementById('r-name').value.trim();
+      const lot  = document.getElementById('r-lot').value;
+      const text = document.getElementById('r-text').value.trim();
+
+      // Crear tarjeta y añadir al grid
+      const stars = Array.from({length:5}, (_,i) =>
+        `<span class="${i<selectedStars?'star-filled':'star-empty'}">★</span>`
+      ).join('');
+      const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const now = new Date().toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <div class="stars">${stars}</div>
+        <p class="review-text">${text}</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">${initials}</div>
+          <div class="reviewer-info">
+            <strong>${name}</strong>
+            <div class="review-date">${now} · ${lot}</div>
+          </div>
+        </div>`;
+      document.getElementById('reviews-grid').prepend(card);
+
+      document.getElementById('review-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

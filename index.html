@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NR Collection — Moda Circular en Lotes</title>
+  <meta name="description" content="Tienda de ropa de segunda mano por lotes. Moda circular, sostenible y asequible."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: var(--nav-h);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('./fondo.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(245,242,237,.92) 45%, rgba(245,242,237,.3) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 580px;
+      padding: 80px 24px;
+      margin-left: calc((100vw - 1160px) / 2);
+    }
+    @media (max-width: 1200px) { .hero-content { margin-left: 24px; } }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--clr-olive);
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1.5px;
+      background: var(--clr-olive);
+    }
+    .hero h1 { margin-bottom: 1.25rem; color: var(--clr-dark); }
+    .hero h1 em { font-style: italic; color: var(--clr-earth); }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--clr-muted);
+      max-width: 420px;
+      margin-bottom: 2.25rem;
+      line-height: 1.75;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .hero-badges {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--clr-border);
+      flex-wrap: wrap;
+    }
+    .hero-badge strong { font-family: var(--ff-head); font-size: 1.6rem; color: var(--clr-dark); display: block; }
+    .hero-badge span   { font-size: .78rem; color: var(--clr-muted); }
+
+    .features {
+      background: var(--clr-dark);
+      color: rgba(255,255,255,.7);
+    }
+    .features-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+    }
+    .feature-item {
+      padding: 32px 20px;
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      border-right: 1px solid rgba(255,255,255,.08);
+    }
+    .feature-item:last-child { border-right: none; }
+    .feature-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .feature-item strong { display: block; font-size: .9rem; color: #fff; font-weight: 600; }
+    .feature-item span   { font-size: .78rem; }
+
+    .cta-banner {
+      background: linear-gradient(135deg, var(--clr-earth) 0%, #6b4f33 100%);
+      color: #fff;
+      padding: 72px 0;
+      text-align: center;
+    }
+    .cta-banner h2 { font-size: clamp(1.8rem,3.5vw,2.6rem); margin-bottom: .75rem; }
+    .cta-banner p  { font-size: 1.05rem; opacity: .85; margin-bottom: 2rem; }
+    .btn-cta-white { background: #fff; color: var(--clr-earth); font-weight: 700; }
+    .btn-cta-white:hover { background: var(--clr-bg); }
+
+    @media (max-width: 768px) { .features-inner { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) {
+      .features-inner { grid-template-columns: 1fr; }
+      .feature-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.08); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="./logo.png" alt="NR Collection" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+        <span class="nav-brand" style="display:none">NR Collection</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">Inicio</a></li>
+        <li><a href="lotes.html">Lotes</a></li>
+        <li><a href="resenas.html">Reseñas</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Carrito">
+          🛍️<span class="cart-count" id="cart-count">0</span>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-eyebrow">Moda circular & sostenible</div>
+        <h1>Tu estilo,<br><em>de forma sostenible</em></h1>
+        <p class="hero-sub">
+          Lotes de ropa de segunda mano cuidadosamente seleccionados.
+          Ahorra dinero, cuida el planeta y encuentra prendas únicas.
+        </p>
+        <div class="hero-actions">
+          <a href="lotes.html" class="btn btn-primary">Ver Lotes</a>
+          <a href="resenas.html" class="btn btn-secondary">Ver Reseñas</a>
+        </div>
+        <div class="hero-badges">
+          <div class="hero-badge"><strong>+200</strong><span>Lotes vendidos</span></div>
+          <div class="hero-badge"><strong>100%</strong><span>Segunda mano</span></div>
+          <div class="hero-badge"><strong>4.4</strong><span>Valoración media</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="features-inner">
+        <div class="feature-item">
+          <span class="feature-icon">📦</span>
+          <div><strong>Envío a toda España</strong><span>Entrega en 3–5 días</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✅</span>
+          <div><strong>Prendas verificadas</strong><span>Revisadas una a una</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💬</span>
+          <div><strong>Pedido por WhatsApp</strong><span>Trato cercano y directo</span></div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💳</span>
+          <div><strong>Bizum o transferencia</strong><span>Pago rápido y seguro</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <div class="section-inner">
+        <h2>¿Lista para renovar tu armario?</h2>
+        <p>Explora nuestros lotes de temporada y encuentra tu próxima prenda favorita.</p>
+        <a href="lotes.html" class="btn btn-cta-white btn">Explorar Lotes</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>NR Collection</h3>
+          <p>Moda de segunda mano por lotes. Sostenible, asequible y con estilo. Dándole una segunda vida a la ropa desde 2022.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">📸</a>
+            <a href="#" aria-label="TikTok">🎵</a>
+            <a href="#" aria-label="WhatsApp">💬</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="lotes.html">Lotes</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Política de Devoluciones</a></li>
+            <li><a href="#">Aviso Legal</a></li>
+            <li><a href="#">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 NR Collection. Todos los derechos reservados.</span>
+        <span>Hecho con mucho amor</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h3>Tu Cesta</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cart-total-amount">0.00 €</span>
+      </div>
+      <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">Pedir por WhatsApp</button>
+    </div>
+  </aside>
+
+  <script src="cart.js"></script>
+</body>
+</html>
