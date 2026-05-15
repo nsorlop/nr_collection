@@ -103,6 +103,7 @@
       font-family: var(--ff-body); font-weight: 600;
       cursor: pointer; letter-spacing: .05em; white-space: nowrap;
       transition: var(--transition);
+      pointer-events: none; /* Evita conflictos al hacer clic en toda la tarjeta */
     }
     .btn-detail:hover { background: var(--clr-olive); }
 
@@ -244,9 +245,9 @@
 
   <div class="page-hero">
     <div class="section-inner">
-      <span class="section-label">Catalogo</span>
+      <span class="section-label">Catálogo</span>
       <h1>Nuestros Lotes</h1>
-      <p>Cada lote esta cuidadosamente seleccionado. Ropa de calidad, precios justos, impacto positivo.</p>
+      <p>Cada lote está cuidadosamente seleccionado. Ropa de calidad, precios justos, impacto positivo.</p>
     </div>
   </div>
 
@@ -254,19 +255,13 @@
     <div class="filters-inner">
       <span class="filter-label">Filtrar:</span>
       <button class="filter-btn active" data-filter="all">Todos</button>
-      <button class="filter-btn" data-filter="mujer">Mujer</button>
-      <button class="filter-btn" data-filter="hombre">Hombre</button>
-      <button class="filter-btn" data-filter="infantil">Infantil</button>
       <button class="filter-btn" data-filter="mix">Mix</button>
     </div>
   </div>
 
   <main>
     <div class="products-grid" id="products-grid">
-
-      <!-- Las tarjetas se generan con JS desde el array LOTS -->
-
-    </div>
+      </div>
   </main>
 
   <footer class="footer">
@@ -282,11 +277,11 @@
           </div>
         </div>
         <div class="footer-col">
-          <h4>Navegacion</h4>
+          <h4>Navegación</h4>
           <ul>
             <li><a href="index.html">Inicio</a></li>
             <li><a href="lotes.html">Lotes</a></li>
-            <li><a href="resenas.html">Resenas</a></li>
+            <li><a href="resenas.html">Reseñas</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -305,7 +300,6 @@
     </div>
   </footer>
 
-  <!-- CART SIDEBAR -->
   <div class="cart-overlay" id="cart-overlay"></div>
   <aside class="cart-sidebar" id="cart-sidebar">
     <div class="cart-header">
@@ -322,7 +316,6 @@
     </div>
   </aside>
 
-  <!-- MODAL DETALLE -->
   <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal" id="modal-box" role="dialog" aria-modal="true">
       <div class="modal-gallery" id="modal-gallery">
@@ -341,116 +334,45 @@
   ============================================== */
   const LOTS = [
     {
-      id: 'lot001',
-      category: 'mujer',
-      badge: 'Nuevo',
-      badgeType: 'new',
-      title: 'Lote Camisetas Vintage Mujer',
-      desc: 'Camisetas de mujer en muy buen estado. Marcas como Zara, H&M y Pull&Bear. Ideales para uso personal o reventa.',
-      tags: ['Muy buen estado', 'Marcas variadas'],
-      images: [
-        'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700&q=75',
-        'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=700&q=75',
-        'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=700&q=75',
-      ],
-      sizes: [
-        { label: '10 prendas (S–M)',  price: 22, perUnit: 2.20, stock: true },
-        { label: '20 prendas (S–L)',  price: 40, perUnit: 2.00, stock: true },
-        { label: '30 prendas (XS–XL)',price: 55, perUnit: 1.83, stock: true },
-      ],
-    },
-    {
-      id: 'lot002',
-      category: 'hombre',
-      badge: null,
-      title: 'Lote Sudaderas Hombre',
-      desc: 'Sudaderas de hombre en buen estado general. Tallas mixtas M–XL. Perfectas para los meses de frio. Puede haber alguna prenda en grado B.',
-      tags: ['Buen estado', 'Tallas M–XL'],
-      images: [
-        'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=700&q=75',
-        'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=700&q=75',
-        'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=700&q=75',
-      ],
-      sizes: [
-        { label: '10 prendas (M–L)',   price: 38, perUnit: 3.80, stock: true },
-        { label: '15 prendas (M–XL)',  price: 52, perUnit: 3.47, stock: true },
-        { label: '25 prendas (S–XXL)', price: 80, perUnit: 3.20, stock: false },
-      ],
-    },
-    {
-      id: 'lot003',
-      category: 'mujer',
-      badge: null,
-      title: 'Lote Vestidos Verano Mujer',
-      desc: 'Vestidos de verano en estado excelente. Varios estilos: casual, boho y midi. Tallas XS–M.',
-      tags: ['Excelente estado', 'Tallas XS–M', 'Temporada verano'],
-      images: [
-        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=75',
-        'https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?w=700&q=75',
-        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=75',
-      ],
-      sizes: [
-        { label: '5 vestidos (XS–S)',  price: 28, perUnit: 5.60, stock: true },
-        { label: '10 vestidos (XS–M)', price: 50, perUnit: 5.00, stock: true },
-        { label: '15 vestidos (XS–L)', price: 70, perUnit: 4.67, stock: true },
-      ],
-    },
-    {
-      id: 'lot004',
-      category: 'infantil',
-      badge: 'Nuevo',
-      badgeType: 'new',
-      title: 'Lote Ropa Infantil Mixto',
-      desc: 'Prendas mixtas para ninos y ninas de 2 a 8 anos. Camisetas, pantalones, sudaderas. Marcas: Zara Kids, H&M, Primark.',
-      tags: ['2–8 años', 'Nino y nina', 'Muy buen estado'],
-      images: [
-        'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=700&q=75',
-        'https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?w=700&q=75',
-        'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=700&q=75',
-      ],
-      sizes: [
-        { label: '15 prendas (2–4 a)', price: 22, perUnit: 1.47, stock: true },
-        { label: '25 prendas (2–8 a)', price: 34, perUnit: 1.36, stock: true },
-        { label: '40 prendas (2–8 a)', price: 50, perUnit: 1.25, stock: true },
-      ],
-    },
-    {
-      id: 'lot005',
+      id: 'lote-polos',
       category: 'mix',
       badge: 'Premium',
       badgeType: 'new',
-      title: 'Lote Mix Premium Marcas',
-      desc: 'Prendas de marcas premium: Tommy Hilfiger, Calvin Klein, Ralph Lauren y similares. Estado muy bueno. Mezcla hombre y mujer.',
-      tags: ['Marcas premium', 'Hombre y mujer', 'Muy buen estado'],
+      title: 'Lote de Polos Marcas',
+      desc: 'Polos seleccionados de marcas reconocidas. Muy buena calidad y rentabilidad asegurada para reventa. Mezcla de colores y estilos clásicos.',
+      tags: ['Polos', 'Marcas', 'Alta rentabilidad'],
       images: [
-        'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=700&q=75',
-        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=75',
-        'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=700&q=75',
+        './polos.jpeg',
+        './polos1.jpeg',
+        './polos2.jpeg',
+        './polos3.jpeg',
       ],
       sizes: [
-        { label: '15 prendas mix',    price: 65,  perUnit: 4.33, stock: true },
-        { label: '30 prendas mix',    price: 120, perUnit: 4.00, stock: true },
-        { label: '50 prendas mix',    price: 190, perUnit: 3.80, stock: false },
+        { label: '25 prendas',  price: 175, perUnit: 7.00, stock: true },
+        { label: '50 prendas',  price: 300, perUnit: 6.00, stock: true },
+        { label: '100 prendas', price: 500, perUnit: 5.00, stock: true },
       ],
     },
     {
-      id: 'lot006',
-      category: 'mujer',
-      badge: 'Agotado',
-      badgeType: 'sold',
-      sold: true,
-      title: 'Lote Abrigos Mujer Otono-Invierno',
-      desc: 'Abrigos y chaquetas de mujer para temporada otono-invierno. Tallas S–L. Marcas: Zara, Mango, Stradivarius.',
-      tags: ['Tallas S–L', 'Otono-Invierno'],
+      id: 'lote-camisetas',
+      category: 'mix',
+      badge: 'Top Ventas',
+      badgeType: 'new',
+      title: 'Lote de Camisetas Vintage',
+      desc: 'Camisetas variadas, vintage y de marcas en excelente estado. Perfectas para renovar tu armario o empezar a revender rápido.',
+      tags: ['Camisetas', 'Vintage', 'Muy buen estado'],
       images: [
-        'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=700&q=75',
-        'https://images.unsplash.com/photo-1539533018257-f63a99e38b5a?w=700&q=75',
+        './camisetas.jpeg',
+        './camisetas1.jpeg',
+        './camisetas2.jpeg',
+        './camisetas3.jpeg',
       ],
       sizes: [
-        { label: '5 prendas (S–M)',  price: 45, perUnit: 9.00, stock: false },
-        { label: '8 prendas (S–L)',  price: 70, perUnit: 8.75, stock: false },
+        { label: '25 prendas',  price: 150, perUnit: 6.00, stock: true },
+        { label: '50 prendas',  price: 250, perUnit: 5.00, stock: true },
+        { label: '100 prendas', price: 400, perUnit: 4.00, stock: true },
       ],
-    },
+    }
   ];
 
   /* ==============================================
@@ -461,7 +383,7 @@
     grid.innerHTML = '';
     const filtered = filter === 'all' ? LOTS : LOTS.filter(l => l.category === filter);
     if (!filtered.length) {
-      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--clr-muted)">No hay lotes en esta categoria por el momento.</p>';
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--clr-muted)">No hay lotes en esta categoría por el momento.</p>';
       return;
     }
     filtered.forEach(lot => {
@@ -472,6 +394,10 @@
       card.className = 'product-card';
       card.dataset.id  = lot.id;
       card.dataset.cat = lot.category;
+      
+      // Hacemos que toda la tarjeta sea clicable para abrir el modal
+      card.onclick = (e) => openModal(lot.id, e);
+
       card.innerHTML = `
         <div class="card-img-wrap">
           <img src="${lot.images[0]}" alt="${lot.title}" loading="lazy"/>
@@ -487,7 +413,7 @@
               ${minPrice} €
               <span class="from">desde / lote</span>
             </div>
-            <button class="btn-detail" onclick="openModal('${lot.id}',event)">
+            <button class="btn-detail">
               Ver detalle
             </button>
           </div>
@@ -536,19 +462,19 @@
       <p class="modal-desc">${currentLot.desc}</p>
       <div class="modal-tags">${currentLot.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('')}</div>
       <div>
-        <div class="size-label">Elige el tamano del lote</div>
+        <div class="size-label">Elige la cantidad del lote</div>
         <div class="size-grid" id="modal-sizes">${sizesHtml}</div>
       </div>
       <div class="modal-price-wrap">
-        <div class="modal-price" id="modal-price">${soldAll ? 'Agotado' : 'Selecciona un tamano'}</div>
+        <div class="modal-price" id="modal-price">${soldAll ? 'Agotado' : 'Selecciona cantidad'}</div>
         <div class="modal-per"  id="modal-per"></div>
       </div>
       <button class="modal-add" id="modal-add-btn"
               onclick="addFromModal()"
               ${soldAll?'disabled':''}>
-        ${soldAll ? 'Agotado' : 'Anadir al carrito'}
+        ${soldAll ? 'Agotado' : 'Añadir al carrito'}
       </button>
-      <p class="modal-note">Pago por Bizum o transferencia. Pedido via WhatsApp.</p>
+      <p class="modal-note">Pago por Bizum o transferencia. Pedido vía WhatsApp.</p>
     `;
 
     document.getElementById('modal-overlay').classList.add('open');
@@ -577,14 +503,14 @@
     btn.classList.add('active');
     selectedSize = currentLot.sizes[idx];
     document.getElementById('modal-price').textContent = selectedSize.price + ' €';
-    document.getElementById('modal-per').textContent   = selectedSize.perUnit.toFixed(2) + ' € / prenda aprox.';
+    document.getElementById('modal-per').textContent   = selectedSize.perUnit.toFixed(2) + ' € / ud.';
     const addBtn = document.getElementById('modal-add-btn');
     addBtn.disabled = false;
-    addBtn.textContent = 'Anadir al carrito';
+    addBtn.textContent = 'Añadir al carrito';
   }
 
   function addFromModal() {
-    if (!selectedSize) { alert('Elige un tamano de lote antes de anadir.'); return; }
+    if (!selectedSize) { alert('Elige un tamaño de lote antes de añadir.'); return; }
     const cartId  = currentLot.id + '_' + selectedSize.label.replace(/\s/g,'_');
     const cartName = currentLot.title + ' — ' + selectedSize.label;
     addToCart(cartId, cartName, selectedSize.price, currentLot.images[0]);

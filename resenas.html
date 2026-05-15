@@ -98,7 +98,7 @@
       font-weight: 600;
     }
 
-    /* Rating summary */
+    /* Mejora visual del 4.4 */
     .rating-summary {
       background: var(--clr-white);
       border-radius: var(--radius-lg);
@@ -111,9 +111,20 @@
       flex-wrap: wrap;
     }
     .rating-big { text-align: center; flex-shrink: 0; }
-    .rating-big .score { font-family: var(--ff-head); font-size: 4rem; font-weight: 600; line-height: 1; color: var(--clr-dark); }
-    .rating-big .stars { justify-content: center; margin: .4rem 0; }
+    .rating-big .score { 
+      font-family: var(--ff-head); 
+      font-size: 4.5rem; 
+      font-weight: 600; 
+      line-height: 0.8; /* Ajuste para que el punto no suba */
+      color: var(--clr-dark);
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+    }
+    .rating-big .score span { font-size: 4.5rem; }
+    .rating-big .stars { justify-content: center; margin: 1rem 0 0.5rem; }
     .rating-big span { font-size: .8rem; color: var(--clr-muted); }
+    
     .rating-bars { flex: 1; min-width: 200px; }
     .bar-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .55rem; }
     .bar-label { font-size: .8rem; color: var(--clr-muted); width: 28px; text-align: right; flex-shrink: 0; }
@@ -121,7 +132,6 @@
     .bar-fill  { height: 100%; background: #F5A623; border-radius: 99px; }
     .bar-pct   { font-size: .78rem; color: var(--clr-muted); width: 32px; }
 
-    /* Formulario nueva reseña */
     .new-review-section {
       background: var(--clr-beige);
       padding: 72px 0;
@@ -217,7 +227,6 @@
   <div class="stats-bar">
     <div class="stats-inner">
       <div class="stat-item"><strong>4.4</strong><span>Valoración media</span></div>
-      <div class="stat-item"><strong>+200</strong><span>Pedidos realizados</span></div>
       <div class="stat-item"><strong>12</strong><span>Reseñas verificadas</span></div>
     </div>
   </div>
@@ -237,9 +246,9 @@
             <span>Basado en 12 reseñas</span>
           </div>
           <div class="rating-bars">
-            <div class="bar-row"><span class="bar-label">5★</span><div class="bar-track"><div class="bar-fill" style="width:50%"></div></div><span class="bar-pct">50%</span></div>
-            <div class="bar-row"><span class="bar-label">4★</span><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div><span class="bar-pct">25%</span></div>
-            <div class="bar-row"><span class="bar-label">3★</span><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><span class="bar-pct">17%</span></div>
+            <div class="bar-row"><span class="bar-label">5★</span><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div><span class="bar-pct">75%</span></div>
+            <div class="bar-row"><span class="bar-label">4★</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-pct">8%</span></div>
+            <div class="bar-row"><span class="bar-label">3★</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-pct">8%</span></div>
             <div class="bar-row"><span class="bar-label">2★</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span class="bar-pct">8%</span></div>
             <div class="bar-row"><span class="bar-label">1★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-pct">0%</span></div>
           </div>
@@ -247,11 +256,10 @@
 
         <div class="reviews-grid" id="reviews-grid">
 
-          <!-- 1 — 5★ -->
           <div class="review-card featured">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Pedí mi primer lote con bastante escepticismo y quedé muy sorprendida. Las camisetas estaban en perfecto estado, bien embaladas y el trato fue muy atento. Ya tengo el segundo pedido en camino.</p>
+            <p class="review-text">Iba con un poco de miedo por si la ropa venía mal, pero flipé cuando abrí la caja. Todo super limpio y bien doblado. La chica por WhatsApp es un encanto.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">LP</div>
               <div class="reviewer-info">
@@ -261,11 +269,10 @@
             </div>
           </div>
 
-          <!-- 2 — 5★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Compro para revender y la relación calidad-precio es muy buena. Los lotes están bien seleccionados, pocas sorpresas desagradables.</p>
+            <p class="review-text">Envío volando. Todo ok.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">JM</div>
               <div class="reviewer-info">
@@ -275,25 +282,23 @@
             </div>
           </div>
 
-          <!-- 3 — 4★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">Buena experiencia en general. El envío llegó en plazo y la mayoría de prendas estaban en muy buen estado. Alguna en grado B que no esperaba, aunque es segunda mano y tampoco es grave.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Por el precio no me quejo, pero un par de sudaderas venían con pelotillas y una mancha en el puño. Para andar por casa valen, pero no están como nuevas.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">AV</div>
               <div class="reviewer-info">
                 <strong>Andrea V.</strong>
-                <div class="review-date">Marzo 2025 · Lote Camisetas Vintage</div>
+                <div class="review-date">Marzo 2025 · Lote Sudaderas</div>
               </div>
             </div>
           </div>
 
-          <!-- 4 — 5★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Compré el lote infantil para mis hijos. Ropa de calidad a buen precio. Repetiremos sin duda.</p>
+            <p class="review-text">Me ahorro una pasta con la ropa de los niños. La mayoría era de Zara y H&M en perfecto estado.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">SR</div>
               <div class="reviewer-info">
@@ -303,25 +308,23 @@
             </div>
           </div>
 
-          <!-- 5 — 3★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">El lote llegó bien pero varias prendas venían en grado B cuando en la descripcion no lo indicaba. Al final el precio era bajo así que tampoco me sorprendió demasiado, pero aviso por si alguien lo compra para revender.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Pues a mí no me ha gustado mucho. Las prendas venían muy dadas de sí y con olor a guardado. Por lo que pagué me esperaba algo mejor seleccionado.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">DG</div>
               <div class="reviewer-info">
                 <strong>Daniel G.</strong>
-                <div class="review-date">Febrero 2025 · Lote Sudaderas</div>
+                <div class="review-date">Febrero 2025 · Lote Camisetas</div>
               </div>
             </div>
           </div>
 
-          <!-- 6 — 5★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Todo perfecto. Comunicacion rapida por WhatsApp y el paquete en dos dias. Sin quejas.</p>
+            <p class="review-text">Todo bien.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">CM</div>
               <div class="reviewer-info">
@@ -331,11 +334,10 @@
             </div>
           </div>
 
-          <!-- 7 — 4★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">Buen lote en general. La mitad de prendas estaban genial, otras en un estado más justo. Para el precio que pague me parece razonable. Repetiria.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Es la segunda vez que pido y el lote premium vale mucho la pena si quieres marcas buenas baratas.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">IL</div>
               <div class="reviewer-info">
@@ -345,11 +347,10 @@
             </div>
           </div>
 
-          <!-- 8 — 3★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">Algunas prendas venian con marcas que no se van del todo. Hay que revisarlo antes de vender. Aun asi el precio es ajustado y el trato fue correcto.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Comunicación de 10. Repetiré seguro.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">MT</div>
               <div class="reviewer-info">
@@ -359,11 +360,10 @@
             </div>
           </div>
 
-          <!-- 9 — 5★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Tercer pedido y sin problemas. Lotes bien descritos, envio rapido, trato agradable. Lo recomiendo a cualquiera que quiera empezar a revender.</p>
+            <p class="review-text">Me flipa la idea. Algún vestido hasta con la etiqueta. Muy contenta.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">RP</div>
               <div class="reviewer-info">
@@ -373,11 +373,10 @@
             </div>
           </div>
 
-          <!-- 10 — 4★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">Producto correcto. Algun detalle menor en dos o tres prendas pero dentro de lo esperable en segunda mano. En conjunto bien.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
+            <p class="review-text">Ideal para empezar a vender en Vinted. Margen asegurado.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">FN</div>
               <div class="reviewer-info">
@@ -387,11 +386,10 @@
             </div>
           </div>
 
-          <!-- 11 — 2★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
-            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span><span class="star-empty">★</span><span class="star-empty">★</span></div>
-            <p class="review-text">El lote de sudaderas tenia bastantes en grado B, algunas con pelotillas y un par con agujeritos. Para uso personal te lo puedes plantear pero para revender es complicado. Me esperaba mejor seleccion.</p>
+            <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-empty">★</span></div>
+            <p class="review-text">Producto correcto. Algún detalle menor pero por este precio está genial.</p>
             <div class="reviewer">
               <div class="reviewer-avatar">BL</div>
               <div class="reviewer-info">
@@ -401,11 +399,10 @@
             </div>
           </div>
 
-          <!-- 12 — 5★ -->
           <div class="review-card">
             <span class="verified-badge">Verificada</span>
             <div class="stars"><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span><span class="star-filled">★</span></div>
-            <p class="review-text">Muy contenta. Prendas en buen estado y comunicacion fluida. Repito seguro.</p>
+            <p class="review-text">¡Recomendado!</p>
             <div class="reviewer">
               <div class="reviewer-avatar">AC</div>
               <div class="reviewer-info">
@@ -415,11 +412,10 @@
             </div>
           </div>
 
-        </div><!-- /reviews-grid -->
+        </div>
       </div>
     </section>
 
-    <!-- FORMULARIO NUEVA RESEÑA -->
     <section class="new-review-section">
       <div class="section-inner">
         <div style="text-align:center">
@@ -531,7 +527,6 @@
 
   <script src="cart.js"></script>
   <script>
-    /* ── Star picker ── */
     let selectedStars = 0;
     const picks = document.querySelectorAll('.star-pick');
     picks.forEach(s => {
@@ -544,7 +539,6 @@
       picks.forEach((p,i) => p.classList.toggle('on', i < selectedStars));
     });
 
-    /* ── Submit reseña ── */
     function submitReview(e) {
       e.preventDefault();
       if (!selectedStars) { alert('Elige una valoracion de estrellas.'); return; }
@@ -552,7 +546,6 @@
       const lot  = document.getElementById('r-lot').value;
       const text = document.getElementById('r-text').value.trim();
 
-      // Crear tarjeta y añadir al grid
       const stars = Array.from({length:5}, (_,i) =>
         `<span class="${i<selectedStars?'star-filled':'star-empty'}">★</span>`
       ).join('');
