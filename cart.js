@@ -167,15 +167,41 @@ function sendToWhatsApp() {
   const msg =
     `Hola! Me gustaría realizar el siguiente pedido en NR Collection 🛍️%0A%0A` +
     `${lines}%0A%0A` +
-    `💰 *Total: ${total} €*%0A%0A` +
-    `¿Podríais confirmarme disponibilidad y los datos para el envío o recogida? Pagaré por Bizum o transferencia. ¡Muchas gracias! 😊`;
+    `💰 *Total: ${total} €*%0A` +
+    `🚚 Envío gratis a toda España (a vuestra cuenta)%0A%0A` +
+    `¿Podríais confirmarme disponibilidad y los datos para el envío? Pagaré por Bizum o transferencia. ¡Muchas gracias! 😊`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+}
+
+/* ---------- Botón flotante de WhatsApp ---------- */
+function injectWhatsAppButton() {
+  if (document.querySelector('.wa-float')) return;
+  const wa = document.createElement('a');
+  wa.className = 'wa-float';
+  wa.href = `https://wa.me/${WHATSAPP_NUMBER}`;
+  wa.target = '_blank';
+  wa.rel = 'noopener';
+  wa.setAttribute('aria-label', 'Escríbenos por WhatsApp');
+  wa.textContent = '💬';
+  document.body.appendChild(wa);
+}
+
+/* ---------- Aviso de envío gratis en el carrito ---------- */
+function injectShippingNote() {
+  const footer = document.querySelector('.cart-footer');
+  if (!footer || footer.querySelector('.cart-shipping-note')) return;
+  const note = document.createElement('div');
+  note.className = 'cart-shipping-note';
+  note.textContent = '🚚 Envío gratis a toda España, a nuestra cuenta';
+  footer.insertBefore(note, footer.firstChild);
 }
 
 /* ---------- Init ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   renderCart();
+  injectWhatsAppButton();
+  injectShippingNote();
 
   // Cerrar carrito al hacer clic en overlay
   document.getElementById('cart-overlay')?.addEventListener('click', () => {

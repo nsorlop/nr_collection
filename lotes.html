@@ -4,6 +4,13 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lotes — NR Collection</title>
+  <meta name="description" content="Catálogo de lotes de ropa de segunda mano: polos, camisetas y pantalones. Garantía 85% grado A y envío gratis a toda España."/>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Lotes — NR Collection"/>
+  <meta property="og:description" content="Lotes de ropa de segunda mano seleccionados a mano. Garantía 85% grado A y envío gratis."/>
+  <meta property="og:image" content="logo.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -217,6 +224,49 @@
     .modal-add:disabled { background: var(--clr-border); color: var(--clr-muted); cursor: not-allowed; }
 
     .modal-note { font-size: .78rem; color: var(--clr-muted); text-align: center; }
+
+    /* Banner de garantía grado A */
+    .guarantee-banner {
+      background: var(--clr-dark);
+      color: #fff;
+    }
+    .guarantee-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+      flex-wrap: wrap;
+    }
+    .guarantee-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .guarantee-text { font-size: .95rem; line-height: 1.5; }
+    .guarantee-text strong { color: var(--clr-olive-lt); font-weight: 700; }
+
+    /* Etiqueta de garantía dentro del modal */
+    .modal-guarantee {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--clr-beige);
+      border-radius: var(--radius-sm);
+      padding: .7rem .9rem;
+      font-size: .82rem;
+      color: var(--clr-earth);
+      font-weight: 500;
+    }
+    .modal-guarantee .badge-grade {
+      background: var(--clr-olive);
+      color: #fff;
+      font-weight: 700;
+      font-size: .72rem;
+      padding: .2rem .55rem;
+      border-radius: 99px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -230,7 +280,9 @@
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Inicio</a></li>
         <li><a href="lotes.html" class="active">Lotes</a></li>
+        <li><a href="sobre-mi.html">Sobre Mí</a></li>
         <li><a href="resenas.html">Reseñas</a></li>
+        <li><a href="faq.html">FAQ</a></li>
       </ul>
       <div class="nav-actions">
         <button class="cart-btn" onclick="toggleCart()" aria-label="Carrito">
@@ -251,11 +303,22 @@
     </div>
   </div>
 
+  <div class="guarantee-banner">
+    <div class="guarantee-inner">
+      <span class="guarantee-icon">✅</span>
+      <span class="guarantee-text">
+        <strong>Garantía de calidad:</strong> garantizamos un mínimo del <strong>85%</strong> de prendas de <strong>grado A</strong> en cada lote — ropa en muy buen estado, revisada una a una. <strong>Envío gratis</strong> a toda España, a nuestra cuenta.
+      </span>
+    </div>
+  </div>
+
   <div class="filters">
     <div class="filters-inner">
       <span class="filter-label">Filtrar:</span>
       <button class="filter-btn active" data-filter="all">Todos</button>
-      <button class="filter-btn" data-filter="mix">Mix</button>
+      <button class="filter-btn" data-filter="polos">Polos</button>
+      <button class="filter-btn" data-filter="camisetas">Camisetas</button>
+      <button class="filter-btn" data-filter="pantalones">Pantalones</button>
     </div>
   </div>
 
@@ -271,9 +334,8 @@
           <h3>NR Collection</h3>
           <p>Moda de segunda mano por lotes. Sostenible, asequible y con estilo.</p>
           <div class="footer-social">
-            <a href="#" aria-label="Instagram">📸</a>
-            <a href="#" aria-label="TikTok">🎵</a>
-            <a href="#" aria-label="WhatsApp">💬</a>
+            <a href="https://wa.me/34644219118" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+            <a href="mailto:nrvintagecollection@gmail.com" aria-label="Correo">✉️</a>
           </div>
         </div>
         <div class="footer-col">
@@ -281,15 +343,18 @@
           <ul>
             <li><a href="index.html">Inicio</a></li>
             <li><a href="lotes.html">Lotes</a></li>
+            <li><a href="sobre-mi.html">Sobre Mí</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="faq.html">FAQ</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
           <ul>
-            <li><a href="#">Política de Privacidad</a></li>
-            <li><a href="#">Política de Devoluciones</a></li>
-            <li><a href="#">Aviso Legal</a></li>
+            <li><a href="privacidad.html">Política de Privacidad</a></li>
+            <li><a href="devoluciones.html">Política de Devoluciones</a></li>
+            <li><a href="aviso-legal.html">Aviso Legal</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
           </ul>
         </div>
       </div>
@@ -335,7 +400,7 @@
   const LOTS = [
     {
       id: 'lote-polos',
-      category: 'mix',
+      category: 'polos',
       badge: 'Premium',
       badgeType: 'new',
       title: 'Lote de Polos Marcas',
@@ -355,7 +420,7 @@
     },
     {
       id: 'lote-camisetas',
-      category: 'mix',
+      category: 'camisetas',
       badge: 'Top Ventas',
       badgeType: 'new',
       title: 'Lote de Camisetas Vintage',
@@ -365,12 +430,29 @@
         './camisetas.jpeg',
         './camisetas1.jpeg',
         './camisetas2.jpeg',
-        './camisetas3.jpeg',
       ],
       sizes: [
         { label: '25 prendas',  price: 150, perUnit: 6.00, stock: true },
         { label: '50 prendas',  price: 250, perUnit: 5.00, stock: true },
         { label: '100 prendas', price: 400, perUnit: 4.00, stock: true },
+      ],
+    },
+    {
+      id: 'lote-pantalones',
+      category: 'pantalones',
+      badge: '¡Solo quedan 100!',
+      badgeType: 'new',
+      title: 'Lote de Pantalones',
+      desc: 'Pantalones variados en muy buen estado: vaqueros, chinos y de vestir de distintas marcas y tallas. Ideales para revender o renovar tu armario por temporadas.',
+      tags: ['Pantalones', 'Vaqueros', 'Marcas variadas'],
+      images: [
+        './pantalones.png',
+        './pantalones1.png',
+      ],
+      sizes: [
+        { label: '25 prendas',  price: 200, perUnit: 8.00, stock: true },
+        { label: '50 prendas',  price: 350, perUnit: 7.00, stock: true },
+        { label: '100 prendas', price: 600, perUnit: 6.00, stock: true },
       ],
     }
   ];
@@ -461,6 +543,10 @@
       <h2 class="modal-title">${currentLot.title}</h2>
       <p class="modal-desc">${currentLot.desc}</p>
       <div class="modal-tags">${currentLot.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('')}</div>
+      <div class="modal-guarantee">
+        <span class="badge-grade">85% GRADO A</span>
+        <span>Garantizamos un mínimo del 85% de prendas en muy buen estado por lote.</span>
+      </div>
       <div>
         <div class="size-label">Elige la cantidad del lote</div>
         <div class="size-grid" id="modal-sizes">${sizesHtml}</div>
@@ -474,7 +560,7 @@
               ${soldAll?'disabled':''}>
         ${soldAll ? 'Agotado' : 'Añadir al carrito'}
       </button>
-      <p class="modal-note">Pago por Bizum o transferencia. Pedido vía WhatsApp.</p>
+      <p class="modal-note">Envío gratis a toda España. Pago por Bizum o transferencia. Pedido vía WhatsApp.</p>
     `;
 
     document.getElementById('modal-overlay').classList.add('open');

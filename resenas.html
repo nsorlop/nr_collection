@@ -4,6 +4,13 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Reseñas — NR Collection</title>
+  <meta name="description" content="Opiniones reales de clientas de NR Collection sobre nuestros lotes de ropa de segunda mano. Valoración media 4.4 sobre 5."/>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Reseñas — NR Collection"/>
+  <meta property="og:description" content="Lo que opinan nuestras clientas sobre los lotes de ropa de segunda mano de NR Collection."/>
+  <meta property="og:image" content="logo.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -203,7 +210,9 @@
       <ul class="nav-links" id="nav-links">
         <li><a href="index.html">Inicio</a></li>
         <li><a href="lotes.html">Lotes</a></li>
+        <li><a href="sobre-mi.html">Sobre Mí</a></li>
         <li><a href="resenas.html" class="active">Reseñas</a></li>
+        <li><a href="faq.html">FAQ</a></li>
       </ul>
       <div class="nav-actions">
         <button class="cart-btn" onclick="toggleCart()" aria-label="Carrito">
@@ -435,8 +444,9 @@
               <div class="form-group">
                 <label>Lote comprado</label>
                 <select id="r-lot">
-                  <option value="Lote Polos">Lote Polos</option>
-                  <option value="Lote Camisetas">Lote Camisetas</option>
+                  <option value="Lote Camisetas Vintage">Lote Camisetas Vintage</option>
+                  <option value="Lote Sudaderas">Lote Sudaderas</option>
+                  <option value="Lote Pantalones Premium">Lote Pantalones Premium</option>
                 </select>
               </div>
             </div>
@@ -476,9 +486,8 @@
           <h3>NR Collection</h3>
           <p>Moda de segunda mano por lotes. Sostenible, asequible y con estilo.</p>
           <div class="footer-social">
-            <a href="#" aria-label="Instagram">📸</a>
-            <a href="#" aria-label="TikTok">🎵</a>
-            <a href="#" aria-label="WhatsApp">💬</a>
+            <a href="https://wa.me/34644219118" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+            <a href="mailto:nrvintagecollection@gmail.com" aria-label="Correo">✉️</a>
           </div>
         </div>
         <div class="footer-col">
@@ -486,15 +495,18 @@
           <ul>
             <li><a href="index.html">Inicio</a></li>
             <li><a href="lotes.html">Lotes</a></li>
+            <li><a href="sobre-mi.html">Sobre Mí</a></li>
             <li><a href="resenas.html">Reseñas</a></li>
+            <li><a href="faq.html">FAQ</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
           <ul>
-            <li><a href="#">Política de Privacidad</a></li>
-            <li><a href="#">Política de Devoluciones</a></li>
-            <li><a href="#">Aviso Legal</a></li>
+            <li><a href="privacidad.html">Política de Privacidad</a></li>
+            <li><a href="devoluciones.html">Política de Devoluciones</a></li>
+            <li><a href="aviso-legal.html">Aviso Legal</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
           </ul>
         </div>
       </div>
@@ -535,36 +547,69 @@
       picks.forEach((p,i) => p.classList.toggle('on', i < selectedStars));
     });
 
+    /* ---------- Persistencia de reseñas ---------- */
+    const REVIEWS_KEY = 'nr_reviews';
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function getReviews() {
+      try { return JSON.parse(localStorage.getItem(REVIEWS_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveReviews(arr) {
+      localStorage.setItem(REVIEWS_KEY, JSON.stringify(arr));
+    }
+
+    function buildReviewCard(r) {
+      const stars = Array.from({length:5}, (_,i) =>
+        `<span class="${i < r.stars ? 'star-filled' : 'star-empty'}">★</span>`
+      ).join('');
+      const initials = r.name.split(' ').map(w => w[0] || '').join('').slice(0,2).toUpperCase();
+
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <div class="stars">${stars}</div>
+        <p class="review-text">${escapeHtml(r.text)}</p>
+        <div class="reviewer">
+          <div class="reviewer-avatar">${escapeHtml(initials)}</div>
+          <div class="reviewer-info">
+            <strong>${escapeHtml(r.name)}</strong>
+            <div class="review-date">${escapeHtml(r.date)} · ${escapeHtml(r.lot)}</div>
+          </div>
+        </div>`;
+      return card;
+    }
+
+    function loadReviews() {
+      const grid = document.getElementById('reviews-grid');
+      getReviews().forEach(r => grid.prepend(buildReviewCard(r)));
+    }
+
     function submitReview(e) {
       e.preventDefault();
       if (!selectedStars) { alert('Elige una valoracion de estrellas.'); return; }
       const name = document.getElementById('r-name').value.trim();
       const lot  = document.getElementById('r-lot').value;
       const text = document.getElementById('r-text').value.trim();
+      const date = new Date().toLocaleDateString('es-ES', { month:'long', year:'numeric' });
 
-      const stars = Array.from({length:5}, (_,i) =>
-        `<span class="${i<selectedStars?'star-filled':'star-empty'}">★</span>`
-      ).join('');
-      const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const now = new Date().toLocaleDateString('es-ES',{month:'long',year:'numeric'});
+      const review = { name, lot, text, stars: selectedStars, date };
+      const reviews = getReviews();
+      reviews.push(review);
+      saveReviews(reviews);
 
-      const card = document.createElement('div');
-      card.className = 'review-card';
-      card.innerHTML = `
-        <div class="stars">${stars}</div>
-        <p class="review-text">${text}</p>
-        <div class="reviewer">
-          <div class="reviewer-avatar">${initials}</div>
-          <div class="reviewer-info">
-            <strong>${name}</strong>
-            <div class="review-date">${now} · ${lot}</div>
-          </div>
-        </div>`;
-      document.getElementById('reviews-grid').prepend(card);
-
+      document.getElementById('reviews-grid').prepend(buildReviewCard(review));
       document.getElementById('review-form').style.display = 'none';
       document.getElementById('form-success').style.display = 'block';
     }
+
+    loadReviews();
   </script>
 </body>
 </html>
